@@ -34,7 +34,7 @@ def predict():
     spo2 = data['spo2']
     user_id = data['userId']
 
-    features = np.array([[bpm, spo2]])
+features = np.array([[bpm, spo2, 0, 0]])  # Add 2 dummy values
     prediction = model.predict(features)[0]
     confidence = model.predict_proba(features).max()
 
