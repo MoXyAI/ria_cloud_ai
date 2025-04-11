@@ -11,7 +11,7 @@ app = Flask(__name__)
 model = joblib.load('ria_model_v2.pkl')  # Trained with bpm, spo2, and optionally more
 
 # Firebase setup (optional for baseline)
-cred = credentials.Certificate('firebase_credentials.json')
+cred = credentials.Certificate('credentials_austin.json')
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://your-firebase-url.firebaseio.com'
 })
