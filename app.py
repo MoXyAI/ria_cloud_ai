@@ -8,14 +8,19 @@ import json
 
 app = Flask(__name__)
 
-# ✅ Load Firebase credentials from ENV
-firebase_creds = os.environ.get("FIREBASE_CREDENTIALS")
-cred = credentials.Certificate(json.loads(firebase_creds))
+# ✅ Load Firebase credentials from ENV and fix \\n to \n
+firebase_creds_str = os.environ['FIREBASE_CREDENTIALS']
+firebase_creds = json.loads(firebase_creds_str)
+firebase_creds['private_key'] = firebase_creds['private_key'].replace("\\n", "\n")
+
+cred = credentials.Certificate(firebase_creds)
+
+# ✅ Initialize Firebase
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://revixapp-ecd88-default-rtdb.firebaseio.com/'
 })
 
-# ✅ Load the model
+# ✅ Load your AI model
 model = joblib.load("ria_model_v2.pkl")
 
 @app.route('/')
@@ -33,7 +38,7 @@ def predict():
     prediction = model.predict(features)[0]
     confidence = model.predict_proba(features).max()
 
-    # Log to Firebase
+    # ✅ Log to Firebase
     ref = db.reference(f'cloud_logs/{user_id}')
     ref.push({
         'bpm': bpm,
